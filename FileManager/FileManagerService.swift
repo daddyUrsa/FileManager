@@ -12,32 +12,26 @@ enum File {
     case file
 }
 
-final class FileManagerService {
-    func listFiles(in directory: String) -> [(String, File)] {
+class FileManagerService {
+    func listFiles(in urlPath: URL) -> [(String, File)] {
         var files = [(String, File)]()
+        var folders = [(String, File)]()
+        var filesObjects = [(String, File)]()
         var isDir : ObjCBool = false
-        guard let urlPath = getURL(for: directory),
-              let directory = try? FileManager.default.contentsOfDirectory(atPath: urlPath.path) else {
-                return []
+        guard let directory = try? FileManager.default.contentsOfDirectory(atPath: urlPath.path) else {                return []
         }
-            
-        print("\n----------------------------")
-        print("LISTING: \(urlPath.path)")
-        print("")
         for file in directory {
             if FileManager.default.fileExists(atPath: "\(urlPath.path)/\(file)", isDirectory: &isDir) {
                 if isDir.boolValue {
-                    files.append((file, .folder))
+                    folders.append((file, .folder))
                 } else {
                     files.append((file, .file))
                 }
             }
-            print("File: \(file.debugDescription)")
         }
-        print(files)
-        print("")
-        print("----------------------------\n")
-        return files
+        filesObjects.append(contentsOf: folders.sorted(by: { $0.0 < $1.0 }))
+        filesObjects.append(contentsOf: files.sorted(by: { $0.0 < $1.0 }))
+        return filesObjects
     }
     
     fileprivate func directoryExistsAtPath(_ path: String) -> Bool {

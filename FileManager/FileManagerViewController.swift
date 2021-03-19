@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  FileManagerViewController.swift
 //  FileManager
 //
 //  Created by Alexey Pavlov on 17.03.2021.
@@ -7,14 +7,15 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class FileManagerViewController: UIViewController {
     let fileManager = FileManagerService()
+    let currentFolder = FileManager.default.urls(for: .libraryDirectory, in: .allDomainsMask)[0]
     var files = [(String, File)]()
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .grouped )
         let queue = DispatchQueue.global(qos: .utility)
         tableView.dataSource = self
-//        tableView.delegate = self
+        tableView.delegate = self
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "myCell")
 
@@ -26,11 +27,12 @@ class ViewController: UIViewController {
         
         view.backgroundColor = .brown
         setupViews()
-        fileManager.createFile(containing: "jasdvdfbdfb", to: "Documents", withName: "text.txt")
-        fileManager.createFile(containing: "sdsagwegrerwgwreg", to: "Documents", withName: "text2.txt")
-        fileManager.createFile(containing: "Jjskdv;;s", to: "Folder1", withName: "text3.txt")
-        fileManager.createDirectory(to: "Documents", withName: "Folder1")
-        files = fileManager.listFiles(in: "Documents")
+//        fileManager.createFile(containing: "jasdvdfbdfb", to: "Documents", withName: "text.txt")
+//        fileManager.createFile(containing: "sdsagwegrerwgwreg", to: "Documents", withName: "text2.txt")
+//        fileManager.createFile(containing: "Jjskdv;;s", to: "Folder1", withName: "text3.txt")
+//        fileManager.createDirectory(to: "Documents", withName: "Folder1")
+        files = fileManager.listFiles(in: currentFolder)
+        print(currentFolder)
     }
     
     func setupViews() {
@@ -44,7 +46,7 @@ class ViewController: UIViewController {
     }
 }
 
-extension ViewController: UITableViewDataSource {
+extension FileManagerViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return files.count
@@ -61,6 +63,12 @@ extension ViewController: UITableViewDataSource {
         
         return cell
     }
-    
-    
+}
+
+extension FileManagerViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let newVC = FileManagerViewController()
+        navigationController?.pushViewController(newVC, animated: true)
+        print(files[indexPath[1]])
+    }
 }
