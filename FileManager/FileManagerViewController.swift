@@ -7,9 +7,10 @@
 
 import UIKit
 
+var currentFolder: URL = FileManager.default.urls(for: .documentDirectory, in: .allDomainsMask)[0]
+
 class FileManagerViewController: UIViewController {
     let fileManager = FileManagerService()
-    let currentFolder = FileManager.default.urls(for: .libraryDirectory, in: .allDomainsMask)[0]
     var files = [(String, File)]()
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .grouped )
@@ -68,7 +69,13 @@ extension FileManagerViewController: UITableViewDataSource {
 extension FileManagerViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let newVC = FileManagerViewController()
-        navigationController?.pushViewController(newVC, animated: true)
-        print(files[indexPath[1]])
+        if files[indexPath[1]].1 == .folder {
+            guard let folder = URL(string: "\(currentFolder)\(files[indexPath[1]].0)") else { return }
+            currentFolder = folder
+            print(currentFolder)
+            navigationController?.pushViewController(newVC, animated: true)
+        }
+//        navigationController?.pushViewController(newVC, animated: true)
+        print(files[indexPath[1]].0)
     }
 }

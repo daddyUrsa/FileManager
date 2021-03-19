@@ -18,10 +18,14 @@ class FileManagerService {
         var folders = [(String, File)]()
         var filesObjects = [(String, File)]()
         var isDir : ObjCBool = false
-        guard let directory = try? FileManager.default.contentsOfDirectory(atPath: urlPath.path) else {                return []
+        guard let directory = try? FileManager.default.contentsOfDirectory(atPath: urlPath.path) else {
+            return []
         }
         for file in directory {
             if FileManager.default.fileExists(atPath: "\(urlPath.path)/\(file)", isDirectory: &isDir) {
+                if file.first == "." { // Пропускаем скрытые файлы и папки
+                    continue
+                }
                 if isDir.boolValue {
                     folders.append((file, .folder))
                 } else {
