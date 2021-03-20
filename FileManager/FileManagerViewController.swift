@@ -7,9 +7,8 @@
 
 import UIKit
 
-var currentFolder: URL = FileManager.default.urls(for: .documentDirectory, in: .allDomainsMask)[0]
-
 final class FileManagerViewController: UIViewController {
+    private var currentFolder: URL = FileManager.default.urls(for: .documentDirectory, in: .allDomainsMask)[0]
     private let fileManager = FileManagerService()
     private var files = [(String, File)]()
     private lazy var tableView: UITableView = {
@@ -67,8 +66,8 @@ final class FileManagerViewController: UIViewController {
         let submitAction = UIAlertAction(title: "Submit", style: .default) { [unowned ac] _ in
             let answer = ac.textFields![0].text
             let fileName = answer ?? ""
-            self.fileManager.createFile(containing: "Hello, world!", to: currentFolder.path, withName: fileName) {
-                self.files = self.fileManager.listFiles(in: currentFolder)
+            self.fileManager.createFile(containing: "Hello, world!", to: self.currentFolder.path, withName: fileName) {
+                self.files = self.fileManager.listFiles(in: self.currentFolder)
                 self.tableView.reloadData()
             }
         }
@@ -86,8 +85,8 @@ final class FileManagerViewController: UIViewController {
         let submitAction = UIAlertAction(title: "Submit", style: .default) { [unowned ac] _ in
             let answer = ac.textFields![0].text
             let directoryName = answer ?? ""
-            self.fileManager.createDirectory(to: currentFolder.path, withName: directoryName) {
-                self.files = self.fileManager.listFiles(in: currentFolder)
+            self.fileManager.createDirectory(to: self.currentFolder.path, withName: directoryName) {
+                self.files = self.fileManager.listFiles(in: self.currentFolder)
                 self.tableView.reloadData()
             }
         }
