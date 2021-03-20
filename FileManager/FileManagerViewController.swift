@@ -67,7 +67,7 @@ final class FileManagerViewController: UIViewController {
         let submitAction = UIAlertAction(title: "Submit", style: .default) { [unowned ac] _ in
             let answer = ac.textFields![0].text
             let fileName = answer ?? ""
-            self.fileManager.createFile(containing: "Text in text file", to: currentFolder.path, withName: fileName) {
+            self.fileManager.createFile(containing: "Hello, world!", to: currentFolder.path, withName: fileName) {
                 self.files = self.fileManager.listFiles(in: currentFolder)
                 self.tableView.reloadData()
             }
