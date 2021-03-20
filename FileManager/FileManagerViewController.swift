@@ -28,12 +28,27 @@ class FileManagerViewController: UIViewController {
         
         view.backgroundColor = .brown
         setupViews()
-//        fileManager.createFile(containing: "jasdvdfbdfb", to: "Documents", withName: "text.txt")
-//        fileManager.createFile(containing: "sdsagwegrerwgwreg", to: "Documents", withName: "text2.txt")
-//        fileManager.createFile(containing: "Jjskdv;;s", to: "Folder1", withName: "text3.txt")
-//        fileManager.createDirectory(to: "Documents", withName: "Folder1")
         files = fileManager.listFiles(in: currentFolder)
-        print(currentFolder)
+//        print(currentFolder)
+//        navigationController?.navigationBar.backItem?
+        let menuButton = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(didTapMenuButton))
+        let addFileButton = UIBarButtonItem(image: #imageLiteral(resourceName: "addFile"), style: .plain, target: self, action: #selector(didTapMenuButton))
+        let addFolderButton = UIBarButtonItem(image: #imageLiteral(resourceName: "addDirectory"), style: .plain, target: self, action: #selector(didTapMenuButton))
+        navigationItem.leftBarButtonItem = menuButton
+        navigationItem.rightBarButtonItems = [addFileButton, addFolderButton]
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        if navigationController?.viewControllers.count == 1 {
+            navigationItem.setLeftBarButton(nil, animated: true)
+        }
+    }
+
+    @objc public func didTapMenuButton() {
+        navigationController?.popViewController(animated: true)
+        currentFolder.deleteLastPathComponent()
     }
     
     func setupViews() {
@@ -70,12 +85,29 @@ extension FileManagerViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let newVC = FileManagerViewController()
         if files[indexPath[1]].1 == .folder {
-            guard let folder = URL(string: "\(currentFolder)\(files[indexPath[1]].0)") else { return }
-            currentFolder = folder
+            currentFolder.appendPathComponent(files[indexPath[1]].0)
             print(currentFolder)
             navigationController?.pushViewController(newVC, animated: true)
+        } else if files[indexPath[1]].1 == .file {
+            var textFile: URL = currentFolder
+            textFile.appendPathComponent(files[indexPath[1]].0)
+            let textFromFile = try! String(contentsOf: textFile, encoding: .utf8)
+            let textViewVC = TextFileViewController()
+            textViewVC.textView.text = textFromFile
+            navigationController?.pushViewController(textViewVC, animated: true)
         }
-//        navigationController?.pushViewController(newVC, animated: true)
         print(files[indexPath[1]].0)
+    }
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        
+        let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { [unowned self] _, _, complete in
+            print("Swiped")
+            complete(true)
+        }
+        
+        let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
+        configuration.performsFirstActionWithFullSwipe = true
+        return configuration
     }
 }

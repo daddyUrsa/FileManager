@@ -23,7 +23,7 @@ class FileManagerService {
         }
         for file in directory {
             if FileManager.default.fileExists(atPath: "\(urlPath.path)/\(file)", isDirectory: &isDir) {
-                if file.first == "." { // Пропускаем скрытые файлы и папки
+                if file.first == "." {
                     continue
                 }
                 if isDir.boolValue {
