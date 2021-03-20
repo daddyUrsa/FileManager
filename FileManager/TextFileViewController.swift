@@ -7,7 +7,7 @@
 
 import UIKit
 
-class TextFileViewController: UIViewController {
+final class TextFileViewController: UIViewController {
     let textView: UITextView = {
         let textView = UITextView()
         textView.translatesAutoresizingMaskIntoConstraints = false
@@ -20,7 +20,7 @@ class TextFileViewController: UIViewController {
         setupViews()
     }
     
-    func setupViews() {
+    private func setupViews() {
         view.addSubview(textView)
         NSLayoutConstraint.activate([
             textView.topAnchor.constraint(equalTo: view.topAnchor),

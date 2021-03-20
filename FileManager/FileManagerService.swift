@@ -44,15 +44,17 @@ class FileManagerService {
         return exists && isDirectory.boolValue
     }
     
-    func createFile(containing: String, to path: String, withName name: String) {
+    func createFile(containing: String, to path: String, withName name: String, completion: () -> ()) {
         let filePath = (getURL(for: path)?.path)! + "/" + name
         let rawData: Data? = containing.data(using: .utf8)
         FileManager.default.createFile(atPath: filePath, contents: rawData, attributes: nil)
+        completion()
     }
     
-    func createDirectory(to path: String, withName name: String) {
+    func createDirectory(to path: String, withName name: String, completion: () -> ()) {
         let filePath = (getURL(for: path)?.path)! + "/" + name
         let _ = try? FileManager.default.createDirectory(atPath: filePath, withIntermediateDirectories: false, attributes: nil)
+        completion()
     }
     
     private func getURL(for directory: String) -> URL? {
