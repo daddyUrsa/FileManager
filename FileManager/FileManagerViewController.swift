@@ -113,6 +113,7 @@ final class FileManagerViewController: UIViewController {
 extension FileManagerViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
         return files.count
     }
     
@@ -150,7 +151,9 @@ extension FileManagerViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
         let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { [unowned self] _, _, complete in
-            print("Swiped")
+            fileManager.deleteFile(at: currentFolder, withName: files[indexPath[1]].0)
+            files = fileManager.listFiles(in: currentFolder)
+            tableView.reloadData()
             complete(true)
         }
         

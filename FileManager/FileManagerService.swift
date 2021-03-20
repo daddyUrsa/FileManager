@@ -57,11 +57,17 @@ class FileManagerService {
         completion()
     }
     
+    func deleteFile(at urlPath: URL, withName name: String) {
+        guard let filePath = getURL(for: urlPath.path)?.appendingPathComponent(name) else {
+            return
+        }
+        try? FileManager.default.removeItem(at: filePath)
+    }
+    
     private func getURL(for directory: String) -> URL? {
         guard let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
             return nil
         }
         return dir
-            
     }
 }
